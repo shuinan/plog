@@ -2,6 +2,7 @@
 #include <cassert>
 #include <cstring>
 #include <cstdio>
+#include <direct.h> 
 #include <sstream>
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -59,6 +60,12 @@ namespace plog
         typedef char nchar;
 #endif
 
+		inline void makedir(const char* dir)
+		{
+			if (-1 == ::_access(dir, 0)) {
+				::_mkdir(dir);
+			}
+		}
         inline void localtime_s(struct tm* t, const time_t* time)
         {
 #if defined(_WIN32) && defined(__BORLANDC__)
