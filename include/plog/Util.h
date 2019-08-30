@@ -2,7 +2,6 @@
 #include <cassert>
 #include <cstring>
 #include <cstdio>
-#include <direct.h> 
 #include <sstream>
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -16,6 +15,7 @@
 #endif
 
 #ifdef _WIN32
+#include <direct.h>
 #   include <plog/WinApi.h>
 #   include <time.h>
 #   include <sys/timeb.h>
@@ -28,6 +28,7 @@
 #       include <iconv.h>
 #   endif
 #else
+#include <sys/types.h>
 #   include <unistd.h>
 #   include <sys/syscall.h>
 #   include <sys/time.h>
@@ -61,10 +62,15 @@ namespace plog
 #endif
 
 		inline void makedir(const char* dir)
-		{
+        {
+#ifdef _WIN32
 			if (-1 == ::_access(dir, 0)) {
 				::_mkdir(dir);
 			}
+#else
+            if(  access(dir,   NULL)!=0   ) {            bool ret = mkdir(dir,   0755)==-1;
+            }
+#endif
 		}
         inline void localtime_s(struct tm* t, const time_t* time)
         {
